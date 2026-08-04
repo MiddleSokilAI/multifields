@@ -1,38 +1,59 @@
-# multiFields 2.x
+# MultiFields
 
-[EVO] multiFields — custom TV
+MultiFields is a custom TV input type for Evolution CMS. It lets a TV render a
+structured set of fields in the Manager and use the same configuration when the
+value is rendered on the front end.
 
----------------------------
-## Создание кастомных полей для документов.
+Documentation: <https://app.gitbook.com/@64j/s/multifields-2/>
 
-Документация https://app.gitbook.com/@64j/s/multifields-2/
+## TV configuration
 
-### Конфигурация
-Создать конфиг файл с названием TV_NAME.php или TV_ID.php. Конфиг ищется в следующем порядке:
+Create a PHP configuration file which returns the TV configuration array. The
+package never creates a missing configuration file automatically.
 
-1. core/custom/config/multifields/
-2. assets/plugins/multifields/config/
-3. core/vendor/evolution-cms-extras/multifields/config/
+For each requested TV, directories are checked in this order:
 
-Для многоязычных TV с ID вида `123_uk` также используется конфиг `123.php`.
+1. `core/custom/config/multifields/` — site-specific overrides
+2. `assets/plugins/multifields/config/` — legacy site configuration
+3. `core/vendor/evolution-cms-extras/multifields/config/` — package defaults
 
-### Пример
-assets/plugins/multifields/config/example.slider.php
+Within each directory, file names are checked in this order:
 
+1. TV name: `TV_NAME.php`
+2. Exact TV ID: `TV_ID.php`
+3. Base numeric TV ID: `TV_ID.php` for a multilingual ID such as `123_uk`
 
-----------------------------
-## Creating custom fields for documents.
+The first matching file wins. This makes `core/custom` the safe place for a
+project override while preserving legacy and package configurations as
+fallbacks.
 
-Docs https://app.gitbook.com/@64j/s/multifields-2/
-
-### Config
-Create a config file named TV_NAME.php or TV_ID.php. Configs are searched in this order:
-
-1. core/custom/config/multifields/
-2. assets/plugins/multifields/config/
-3. core/vendor/evolution-cms-extras/multifields/config/
-
-For multilingual TVs with an ID such as `123_uk`, the `123.php` config is also used.
+If no configuration file is found, the Manager shows a diagnostic instead of
+creating a field with an assumed configuration.
 
 ### Example
-assets/plugins/multifields/config/example.slider.php
+
+For a TV named `homepage_blocks`, create:
+
+```php
+<?php
+
+return [
+    'settings' => [],
+    'templates' => [],
+    'items' => [],
+];
+```
+
+Save it as `core/custom/config/multifields/homepage_blocks.php`. The package
+also ships a legacy example at
+`assets/plugins/multifields/config/example.slider.php`.
+
+## Package resources
+
+Element PHP classes, templates, styles and scripts are package resources and
+are loaded from `src/Elements/`. Do not duplicate them into
+`assets/plugins/multifields/elements/`.
+
+The Manager template action responds with JSON during `OnManagerPageInit`; a
+failed template request is reported as a JSON error rather than returned as a
+Manager HTML page.
