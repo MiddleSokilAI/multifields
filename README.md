@@ -11,6 +11,15 @@ multiFields — кастомний тип TV для Evolution CMS. Він доз
 Створи PHP-файл конфігурації, який повертає масив налаштувань TV. Пакет ніколи
 не створює відсутній конфіг автоматично.
 
+Щоб опублікувати приклади конфігурацій пакета в
+`core/custom/config/multifields/`, виконай:
+
+```bash
+php artisan vendor:publish --tag=multiFields
+```
+
+Без `--force` команда не перезаписує файли, які вже існують у `core/custom`.
+
 Для кожного TV директорії перевіряються в такому порядку:
 
 1. `core/custom/config/multifields/` — специфічні для сайту перевизначення
@@ -68,6 +77,16 @@ value is rendered on the front end.
 
 Create a PHP configuration file which returns the TV configuration array. The
 package never creates a missing configuration file automatically.
+
+To publish the package configuration examples to
+`core/custom/config/multifields/`, run:
+
+```bash
+php artisan vendor:publish --tag=multiFields
+```
+
+Without `--force`, the command does not overwrite files that already exist in
+`core/custom`.
 
 For each requested TV, directories are checked in this order:
 
