@@ -2,6 +2,12 @@
 
 namespace Multifields\Elements\Table;
 
+/**
+ * Renders a table-based MultiFields editor with row-level manager actions.
+ *
+ * The table action list keeps visibility and collapsed-state controls available
+ * alongside the existing structural editing actions.
+ */
 class Table extends \Multifields\Base\Elements
 {
     protected $styles = 'view/css/table.css';
@@ -12,6 +18,8 @@ class Table extends \Multifields\Base\Elements
         'add',
         'move',
         'del',
+        'hide',
+        'expand',
     ];
 
     protected $types = [

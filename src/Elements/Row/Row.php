@@ -2,6 +2,12 @@
 
 namespace Multifields\Elements\Row;
 
+/**
+ * Renders a manager row and exposes the actions available for that row.
+ *
+ * The action list controls editor capabilities whose state is persisted with
+ * the MultiFields value, including temporary hiding and collapsing of groups.
+ */
 class Row extends \Multifields\Base\Elements
 {
     protected $styles = 'view/css/row.css';
@@ -12,6 +18,8 @@ class Row extends \Multifields\Base\Elements
         'move',
         'del',
         'resize',
+        'hide',
+        'expand',
     ];
 
     protected $template = '
@@ -42,11 +50,6 @@ class Row extends \Multifields\Base\Elements
         parent::setAttr();
     }
 
-    /**
-     * Build the configured nested-template selector for a row.
-     *
-     * @return void
-     */
     protected function setTemplates()
     {
         $out = '';
