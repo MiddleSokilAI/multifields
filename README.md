@@ -6,8 +6,6 @@ multiFields — кастомний тип TV для Evolution CMS. Він доз
 структурований набір полів у Manager і використовувати ту саму конфігурацію на
 фронтенді.
 
-Документація: <https://app.gitbook.com/@64j/s/multifields-2/>
-
 ### Конфігурація TV
 
 Створи PHP-файл конфігурації, який повертає масив налаштувань TV. Пакет ніколи
@@ -65,8 +63,6 @@ PHP-класи елементів, шаблони, стилі та скрипт�
 multiFields is a custom TV input type for Evolution CMS. It lets a TV render a
 structured set of fields in the Manager and use the same configuration when the
 value is rendered on the front end.
-
-Documentation: <https://app.gitbook.com/@64j/s/multifields-2/>
 
 ### TV configuration
 
