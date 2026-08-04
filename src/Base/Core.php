@@ -66,6 +66,8 @@ class Core
     }
 
     /**
+     * Build the manager bootstrap and package-owned element asset bundles.
+     *
      * @return string
      */
     public function getStartScripts()
@@ -87,7 +89,7 @@ class Core
             evo.MODX_MANAGER_URL = \'' . MODX_MANAGER_URL . '\';
         }
         if (typeof evo.config.which_browser === \'undefined\') {
-            evo.config.which_browser = \'' . ($evo->configGlobal['which_browser'] ? $evo->configGlobal['which_browser'] : $evo->config['which_browser']) . '\';
+            evo.config.which_browser = \'' . ($evo->configGlobal['which_browser'] ?? $evo->getConfig('which_browser', 'mcpuk')) . '\';
         }
         </script>';
 
@@ -111,7 +113,7 @@ class Core
 
         $this->removeFile($cache_scripts, $this->hasFileChanged($scripts['@'][1]));
 
-        if ($elements = glob($this->getParams('basePath') . 'elements/*', GLOB_ONLYDIR)) {
+        if ($elements = glob($this->getParams('basePath') . 'Elements/*', GLOB_ONLYDIR)) {
             foreach ($elements as $path) {
                 if ($elements_elements = glob($path . '/*.php')) {
                     $namespace = ucfirst(basename($path));
@@ -392,20 +394,38 @@ class Core
     }
 
     /**
+     * Load the TV configuration from the first matching project or package path.
+     *
      * @param null $key
      * @return array|mixed|null
      */
     public function getConfig($key = null)
     {
         if (empty($this->config)) {
-            if (!is_dir($this->getParams('basePath') . 'config')) {
-                mkdir($this->getParams('basePath') . 'config', 0755);
-            }
+            $configNames = [
+                $this->getParams('tv')['name'],
+                (string)$this->getParams('tv')['id'],
+            ];
 
-            if (file_exists($this->getParams('basePath') . 'config/' . $this->getParams('tv')['name'] . '.php')) {
-                $this->config = require $this->getParams('basePath') . 'config/' . $this->getParams('tv')['name'] . '.php';
-            } elseif (file_exists($this->getParams('basePath') . 'config/' . $this->getParams('tv')['id'] . '.php')) {
-                $this->config = require $this->getParams('basePath') . 'config/' . $this->getParams('tv')['id'] . '.php';
+            if (preg_match('/^(\d+)_[a-z][a-z0-9-]*$/i', (string)$this->getParams('tv')['id'], $matches)) {
+                $configNames[] = $matches[1];
+            }
+            $configNames = array_filter(array_unique($configNames), 'strlen');
+
+            $configDirectories = [
+                MODX_BASE_PATH . 'core/custom/config/multifields/',
+                MODX_BASE_PATH . 'assets/plugins/multifields/config/',
+                MODX_BASE_PATH . 'core/vendor/evolution-cms-extras/multifields/config/',
+            ];
+
+            foreach ($configDirectories as $configDirectory) {
+                foreach ($configNames as $configName) {
+                    $configFile = $configDirectory . $configName . '.php';
+                    if (is_file($configFile)) {
+                        $this->config = require $configFile;
+                        break 2;
+                    }
+                }
             }
 
             if (!is_array($this->config)) {

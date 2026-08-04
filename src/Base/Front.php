@@ -456,16 +456,38 @@ class Front
     }
 
     /**
+     * Load the TV configuration from the first matching project or package path.
+     *
      * @param null $key
      * @return array|mixed
      */
     protected static function getConfig($key = null)
     {
         if (empty(self::$config)) {
-            if (file_exists(self::getParams('basePath') . 'config/' . self::getParams('tvName') . '.php')) {
-                self::$config = require_once self::getParams('basePath') . 'config/' . self::getParams('tvName') . '.php';
-            } elseif (file_exists(self::getParams('basePath') . 'config/' . self::getParams('tvId') . '.php')) {
-                self::$config = require_once self::getParams('basePath') . 'config/' . self::getParams('tvId') . '.php';
+            $configNames = [
+                self::getParams('tvName'),
+                (string)self::getParams('tvId'),
+            ];
+
+            if (preg_match('/^(\d+)_[a-z][a-z0-9-]*$/i', (string)self::getParams('tvId'), $matches)) {
+                $configNames[] = $matches[1];
+            }
+            $configNames = array_filter(array_unique($configNames), 'strlen');
+
+            $configDirectories = [
+                MODX_BASE_PATH . 'core/custom/config/multifields/',
+                MODX_BASE_PATH . 'assets/plugins/multifields/config/',
+                MODX_BASE_PATH . 'core/vendor/evolution-cms-extras/multifields/config/',
+            ];
+
+            foreach ($configDirectories as $configDirectory) {
+                foreach ($configNames as $configName) {
+                    $configFile = $configDirectory . $configName . '.php';
+                    if (is_file($configFile)) {
+                        self::$config = require $configFile;
+                        break 2;
+                    }
+                }
             }
         }
 
