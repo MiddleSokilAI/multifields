@@ -2,6 +2,12 @@
 
 namespace Multifields\Elements\Thumb;
 
+/**
+ * Renders an image or file thumbnail editor and its manager actions.
+ *
+ * Thumbnail visibility can be toggled without removing the stored item from
+ * the MultiFields value.
+ */
 class Thumb extends \Multifields\Base\Elements
 {
     protected $styles = 'view/css/thumb.css';
@@ -11,7 +17,8 @@ class Thumb extends \Multifields\Base\Elements
         'add',
         'move',
         'del',
-        'edit'
+        'edit',
+        'hide',
     ];
 
     protected $template = '

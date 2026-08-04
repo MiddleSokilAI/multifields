@@ -2,6 +2,12 @@
 
 namespace Multifields\Elements\Row;
 
+/**
+ * Renders a manager row and exposes the actions available for that row.
+ *
+ * The action list controls editor capabilities whose state is persisted with
+ * the MultiFields value, including temporary hiding and collapsing of groups.
+ */
 class Row extends \Multifields\Base\Elements
 {
     protected $styles = 'view/css/row.css';
@@ -12,6 +18,8 @@ class Row extends \Multifields\Base\Elements
         'move',
         'del',
         'resize',
+        'hide',
+        'expand',
     ];
 
     protected $template = '
@@ -46,9 +54,9 @@ class Row extends \Multifields\Base\Elements
     {
         $out = '';
 
-        if (!empty(mfc()->getConfig('templates')) && isset($this->params['templates']) && ($this->params['templates'] === true || is_array($this->params['templates']))) {
+        if (!empty(\Multifields\Base\Core::getInstance()->getConfig('templates')) && isset($this->params['templates']) && ($this->params['templates'] === true || is_array($this->params['templates']))) {
             $i = 0;
-            foreach (mfc()->getConfig('templates') as $k => $v) {
+            foreach (\Multifields\Base\Core::getInstance()->getConfig('templates') as $k => $v) {
                 if ((empty($v['hidden']) && empty($this->params['templates'])) || ($this->params['templates'] === true || (is_array($this->params['templates']) && (isset($this->params['templates'][$k]) || in_array($k, $this->params['templates']))))) {
                     $v['label'] = isset($v['label']) ? $v['label'] : $k;
                     $v['icon'] = isset($v['icon']) ? $v['icon'] : '';

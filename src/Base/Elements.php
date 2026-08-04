@@ -40,6 +40,8 @@ class Elements
     }
 
     /**
+     * Resolve a MultiFields element from the runtime cache or package source.
+     *
      * @param null $className
      * @return object|null
      */
@@ -67,11 +69,35 @@ class Elements
 
         if (isset(Elements::$elements[$className])) {
             $element = Elements::$elements[$className];
-        } elseif (class_exists($className)) {
-            $element = Elements::$elements[$className] = new $className();
-            if (Elements::$elements[$className]->disabled) {
-                unset(Elements::$elements[$className]);
-                $element = null;
+        } else {
+            if (!class_exists($className)) {
+                $relativeClass = str_replace('\\', '/', ltrim($className, '\\'));
+                if (strpos($relativeClass, 'Multifields/') === 0) {
+                    $relativeFile = substr($relativeClass, strlen('Multifields/')) . '.php';
+                    $classFiles = [dirname(__DIR__) . '/' . $relativeFile];
+                    $pathParts = explode('/', $relativeFile);
+
+                    if (count($pathParts) >= 3 && strcasecmp($pathParts[0], 'Elements') === 0) {
+                        $legacyFile = strtolower($pathParts[1]) . '/' . implode('/', array_slice($pathParts, 2));
+                        $classFiles[] = dirname(__DIR__) . '/Elements/' . $legacyFile;
+                        $classFiles[] = dirname(__DIR__) . '/elements/' . $legacyFile;
+                    }
+
+                    foreach (array_unique($classFiles) as $classFile) {
+                        if (is_file($classFile)) {
+                            require_once $classFile;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (class_exists($className, false)) {
+                $element = Elements::$elements[$className] = new $className();
+                if (Elements::$elements[$className]->disabled) {
+                    unset(Elements::$elements[$className]);
+                    $element = null;
+                }
             }
         }
 
@@ -90,6 +116,8 @@ class Elements
     }
 
     /**
+     * Render a configured field with a package or native Evolution renderer.
+     *
      * @param array $params
      * @return string
      */
@@ -110,6 +138,8 @@ class Elements
     }
 
     /**
+     * Load the template relative to the resolved element class.
+     *
      * @return string
      */
     private function getTemplate()
@@ -119,7 +149,8 @@ class Elements
                 $name = str_replace('\\', '/', static::class);
                 $this->template = $this->tpl = dirname(dirname(__DIR__)) . 'Elements.php/' . strtolower(dirname($name) . '/' . basename($name)) . '.tpl';
             } else {
-                $this->template = dirname(dirname(__DIR__)) . '/' . trim($this->tpl, '/');
+                $classFile = (new \ReflectionClass(static::class))->getFileName();
+                $this->template = $classFile ? dirname($classFile) . '/' . trim($this->tpl, '/') : '';
             }
 
             if (is_file($this->template)) {
@@ -133,6 +164,8 @@ class Elements
     }
 
     /**
+     * Resolve an element configuration from local data or the active TV templates.
+     *
      * @param string $key
      * @param array $config
      * @return array
@@ -143,8 +176,8 @@ class Elements
 
         if (isset($config[$key])) {
             $result = $config[$key];
-        } elseif (isset(mfc()->getConfig('templates')[$key])) {
-            $result = mfc()->getConfig('templates')[$key];
+        } elseif (isset(\Multifields\Base\Core::getInstance()->getConfig('templates')[$key])) {
+            $result = \Multifields\Base\Core::getInstance()->getConfig('templates')[$key];
         } else {
             if (is_array($config)) {
                 foreach ($config as $k => $v) {
@@ -257,6 +290,8 @@ class Elements
     }
 
     /**
+     * Render one configured field and stop cleanly when no renderer can be resolved.
+     *
      * @param array $params
      * @return string
      */
@@ -284,7 +319,13 @@ class Elements
                 'actions' => null
             ], $params);
 
+            $requestedType = $this->params['type'];
             $element = $this->element($this->params['type']);
+
+            if (!$element && strcasecmp((string)$requestedType, 'multifields') === 0) {
+                return '<div class="alert alert-danger">MultiFields cannot resolve the renderer class for type &quot;multifields&quot;.'
+                    . ' Check the package element paths and Composer autoload casing.</div>';
+            }
 
             if (!$element) {
                 $this->setTitle();
@@ -313,6 +354,12 @@ class Elements
                 if (!is_bool($this->params['value'])) {
                     $this->params['value'] = htmlspecialchars($this->params['value'], ENT_QUOTES, 'UTF-8');
                 }
+            }
+
+            if (!$element) {
+                return '<div class="alert alert-danger">MultiFields cannot resolve the renderer for type &quot;'
+                    . htmlspecialchars((string)$requestedType, ENT_QUOTES, 'UTF-8')
+                    . '&quot;. Check the package element paths and Composer autoload casing.</div>';
             }
 
             $element->setParams($this->params);
@@ -482,23 +529,25 @@ class Elements
     }
 
     /**
+     * Render a named TV template for the manager JSON action endpoint.
+     *
      * @param array $params
      * @return false|string
      */
     public function actionTemplate($params = [])
     {
-        mfc([
+        \Multifields\Base\Core::getInstance([
             'tv' => [
                 'id' => $params['tvid'],
                 'name' => $params['tvname']
             ]
         ]);
 
-        if (!empty(mfc()->getConfig('templates')[$params['tpl']])) {
+        if (!empty(\Multifields\Base\Core::getInstance()->getConfig('templates')[$params['tpl']])) {
             $params['html'] = $this->renderData([
-                $params['tpl'] => mfc()->getConfig('templates')[$params['tpl']]
+                $params['tpl'] => \Multifields\Base\Core::getInstance()->getConfig('templates')[$params['tpl']]
             ]);
-            $params['type'] = mfc()->getConfig('templates')[$params['tpl']]['type'];
+            $params['type'] = \Multifields\Base\Core::getInstance()->getConfig('templates')[$params['tpl']]['type'];
         }
 
         return json_encode($params, JSON_NUMERIC_CHECK | JSON_UNESCAPED_UNICODE);

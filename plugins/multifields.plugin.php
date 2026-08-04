@@ -8,7 +8,7 @@
  * @version     2.0
  * @package     evo
  * @internal    @properties &multifields_storage=Data storage;list;default,files,database;default &multifields_debug=Plugin debug;list;no,yes;no
- * @internal    @events OnAfterLoadDocumentObject,OnWebPageInit,OnBeforeManagerPageInit,OnManagerMainFrameHeaderHTMLBlock,OnDocFormDelete,OnDocFormSave
+ * @internal    @events OnAfterLoadDocumentObject,OnWebPageInit,OnBeforeManagerPageInit,OnManagerPageInit,OnManagerMainFrameHeaderHTMLBlock,OnDocFormDelete,OnDocFormSave
  * @internal    @modx_category Manager and Admin
  * @internal    @installset base,sample
  * @author      64j
@@ -28,26 +28,32 @@ Event::listen('evolution.OnManagerMainFrameHeaderHTMLBlock', function ($params) 
     }
 });
 
-Event::listen('evolution.OnManagerMainFrameHeaderHTMLBlock', function ($params) {
+Event::listen('evolution.OnManagerPageInit', function ($params) {
     if (isset($_REQUEST['mf-action']) && !empty($_REQUEST['action'])) {
         $className = !empty($_REQUEST['class']) ? $_REQUEST['class'] : '';
+
+        header('Content-Type: application/json; charset=UTF-8');
 
         if (class_exists($className)) {
             $class = new $className();
             $method = 'action' . ucfirst(strtolower($_REQUEST['action']));
-            if (is_callable([$className, $method])) {
+            if (is_callable([$class, $method])) {
                 try {
                     echo $class->$method($_REQUEST);
-                } catch (Error $exception) {
+                } catch (\Throwable $exception) {
                     echo json_encode([
                         'error' => (string)$exception
                     ], JSON_UNESCAPED_UNICODE);
                 }
             } else {
-                echo 'Method ' . $method . ' not found in class ' . $className . '!';
+                echo json_encode([
+                    'error' => 'Method ' . $method . ' not found in class ' . $className . '!'
+                ], JSON_UNESCAPED_UNICODE);
             }
         } else {
-            echo 'Class ' . $className . ' not found!';
+            echo json_encode([
+                'error' => 'Class ' . $className . ' not found!'
+            ], JSON_UNESCAPED_UNICODE);
         }
 
         exit;

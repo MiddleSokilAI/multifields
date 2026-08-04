@@ -8,11 +8,18 @@ class MultifieldsServiceProvider extends ServiceProvider
 
     protected $namespace = '';
 
+    /**
+     * Register publishable MultiFields configuration examples for console use.
+     *
+     * @return void
+     */
     public function boot()
     {
-//        if(IN_MANAGER_MODE) {
-//            $this->loadViewsFrom(__DIR__ . '/../views', 'tinymce5settings');
-//        }
+        if ($this->app->runningInConsole()) {
+            $this->publishes([
+                dirname(__DIR__) . '/config/' => config_path('multifields', true),
+            ], 'multiFields');
+        }
     }
     /**
      * Register the service provider.

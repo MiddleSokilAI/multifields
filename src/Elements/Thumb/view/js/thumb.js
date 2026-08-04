@@ -18,6 +18,15 @@ Multifields.element('thumb', {
     }
   },
 
+  actionHide: function() {
+    if (!Multifields.el.dataset.mfHide) {
+      Multifields.el.setAttribute('data-mf-hide', 1);
+    } else {
+      Multifields.el.removeAttribute('data-mf-hide');
+    }
+    documentDirty = true;
+  },
+
   actionEdit: function() {
     if (Multifields.el.classList.contains('mf-group')) {
       let clone = Multifields.clone(false);
