@@ -51,14 +51,14 @@
                         'class' => 'col-6 float-left mf-card-fields-column',
                         'items' => [
                             'image' => [
-                                'title' => __('multiFields::global.image'),
+                                'title' => __('global.image'),
                                 'type' => 'image',
                                 'thumb' => 'thumb',
                                 'placeholder' => '...',
                                 'class' => 'col-12',
                             ],
                             'link' => [
-                                'title' => __('multiFields::global.link'),
+                                'title' => __('global.link'),
                                 'type' => 'text',
                                 'placeholder' => '...',
                                 'class' => 'col-12',
@@ -66,7 +66,7 @@
                         ],
                     ],
                     'alt' => [
-                        'title' => __('multiFields::global.image_alt'),
+                        'title' => __('global.image_alt'),
                         'type' => 'text',
                         'placeholder' => '...',
                         'class' => 'col-6',

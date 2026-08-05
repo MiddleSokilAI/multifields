@@ -30,6 +30,7 @@ class Front
 
         self::setParams(array_merge([
             'basePath' => str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . '/',
+            'dataPath' => MODX_BASE_PATH . 'core/custom/config/multifields/data/',
             'storage' => empty($pluginParams['multifields_storage']) ? 'files' : $pluginParams['multifields_storage'],
             'docid' => $evo->documentIdentifier,
             'tvId' => 0,
@@ -159,12 +160,15 @@ class Front
     }
 
     /**
+     * Load file-backed TV data from the project custom configuration directory.
+     *
      * @return void
      */
     protected static function getDataFromFile()
     {
-        if (file_exists(self::getParams('basePath') . 'data/' . self::getParams('docid') . '__' . self::getParams('tvId') . '.json')) {
-            self::$data = json_encode(file_get_contents(self::getParams('basePath') . 'data/' . self::getParams('docid') . '__' . self::getParams('tvId') . '.json'), true);
+        $file = self::getParams('dataPath') . self::getParams('docid') . '__' . self::getParams('tvId') . '.json';
+        if (file_exists($file)) {
+            self::$data = json_encode(file_get_contents($file), true);
         }
     }
 

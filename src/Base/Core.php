@@ -28,6 +28,7 @@ class Core
 
         $this->setParams(array_merge([
             'basePath' => str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . '/',
+            'dataPath' => MODX_BASE_PATH . 'core/custom/config/multifields/data/',
             'storage' => empty($pluginParams['multifields_storage']) ? 'files' : $pluginParams['multifields_storage'],
             'debug' => empty($pluginParams['multifields_debug']) ? false : ($pluginParams['multifields_debug'] == 'no' ? false : true),
         ], $params));
@@ -329,11 +330,18 @@ class Core
     }
 
     /**
+     * Persist file-backed TV data in the project custom configuration directory.
      *
+     * @return void
      */
     public function saveData()
     {
         if (isset($_POST['tv-mf-data']) && $this->getParams('storage') == 'files') {
+            $dataPath = $this->getParams('dataPath');
+            if (!is_dir($dataPath)) {
+                mkdir($dataPath, 0755, true);
+            }
+
             foreach ($_POST['tv-mf-data'] as $k => $data) {
                 list($id, $tvId) = explode('__', $k);
                 $this->setParams([
@@ -343,7 +351,7 @@ class Core
                     ]
                 ]);
                 $data = evolutionCMS()->removeSanitizeSeed($data);
-                $file = $this->getParams('basePath') . 'data/' . $id . '__' . $tvId . '.json';
+                $file = $dataPath . $id . '__' . $tvId . '.json';
                 if ($data == '') {
                     if (is_file($file)) {
                         unlink($file);
@@ -510,16 +518,19 @@ class Core
     }
 
     /**
-     * @param int $doc_id
-     * @param null $tv_id
+     * Load file-backed TV data from the project custom configuration directory.
+     *
+     * @param int $doc_id Resource identifier.
+     * @param int|string|null $tv_id Template variable identifier.
      * @return array
      */
     private function fileData($doc_id = 0, $tv_id = null)
     {
         $this->data = [];
 
-        if (!is_dir($this->getParams('basePath') . 'data')) {
-            mkdir($this->getParams('basePath') . 'data', 0755);
+        $dataPath = $this->getParams('dataPath');
+        if (!is_dir($dataPath)) {
+            mkdir($dataPath, 0755, true);
         }
 
         if (empty($doc_id) && !empty($this->getParams('id'))) {
@@ -530,7 +541,7 @@ class Core
             $tv_id = $this->getParams('tv')['id'];
         }
 
-        $file = $this->getParams('basePath') . 'data/' . $doc_id . '__' . $tv_id . '.json';
+        $file = $dataPath . $doc_id . '__' . $tv_id . '.json';
 
         if (file_exists($file)) {
             $this->data = file_get_contents($file);

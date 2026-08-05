@@ -6,8 +6,5 @@ return [
     'cards_block' => 'Cards block',
     'section_title' => 'Section title',
     'cards_list' => 'Cards list',
-    'image' => 'Image',
-    'image_alt' => 'Image ALT',
-    'link' => 'Link',
     'card_title' => 'Card title',
 ];
