@@ -236,7 +236,7 @@ class Elements
                     $v['display.title'] = $v['title'];
 
                     if (is_scalar($titleValue) && trim((string)$titleValue) !== '') {
-                        $v['display.title'] .= ' (' . (string)$titleValue . ')';
+                        $v['display.title'] .= ' (<strong>' . (string)$titleValue . '</strong>)';
                     }
                 }
 

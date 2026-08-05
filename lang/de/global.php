@@ -10,6 +10,8 @@ return [
     'last_sarticles_link_text' => 'Linktext',
     'last_sarticles_more' => 'Mehr Einträge',
     'cards_block' => 'Kartenblock',
+    'logos_block' => 'Logoliste',
+    'logos_list' => 'Logoliste',
     'section_title' => 'Abschnittstitel',
     'cards_list' => 'Kartenliste',
     'image' => 'Bild',

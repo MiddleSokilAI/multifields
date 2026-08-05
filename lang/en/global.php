@@ -10,6 +10,8 @@ return [
     'last_sarticles_link_text' => 'Link text',
     'last_sarticles_more' => 'More entries',
     'cards_block' => 'Cards block',
+    'logos_block' => 'Logo list',
+    'logos_list' => 'Logo list',
     'section_title' => 'Section title',
     'cards_list' => 'Cards list',
     'image' => 'Image',

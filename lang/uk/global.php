@@ -10,6 +10,8 @@ return [
     'last_sarticles_link_text' => 'Текст посилання',
     'last_sarticles_more' => 'Більше записів',
     'cards_block' => 'Блок карток',
+    'logos_block' => 'Список логотипів',
+    'logos_list' => 'Список логотипів',
     'section_title' => 'Заголовок секції',
     'cards_list' => 'Список карток',
     'image' => 'Зображення',
