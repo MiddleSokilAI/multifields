@@ -96,7 +96,7 @@ class Richtext extends \Multifields\Base\Elements
             $evtOut = '';
         }
 
-        #header('Content-Type: text/html; charset=UTF-8');
+        header('Content-Type: text/html; charset=UTF-8');
         return $this->view([
             'lang' => $evo->getConfig('lang_code'),
             'MODX_SITE_URL' => MODX_SITE_URL,

@@ -6,7 +6,7 @@
 .multifields input[disabled], .multifields select[disabled], .multifields textarea[disabled] { opacity: .7 !important; background-color: #fff }
 .multifields .mf-hidden, [data-multifields1] { display: none !important; }
 .multifields > .mf-items { position: relative; margin: 0 -.25rem !important; background: #f9f9f9 }
-.multifields .mf-items { display: flex; flex-wrap: wrap; padding: .25rem; }
+.multifields .mf-items { display: flex; flex-wrap: wrap; padding: .25rem; align-items: start;}
 .multifields .mf-items::after { content: ""; display: table; width: 100%; }
 .multifields .form-control, .multifields input, .multifields select, .multifields select[size="1"] { display: block; float: none; }
 .multifields input[type="checkbox"], .multifields input[type="radio"] { display: inline-block }
@@ -48,12 +48,6 @@
 
 /******************/
 .multifields .mf-row { margin: 0 0 15px 0 }
-.multifields .mf-card-fields { margin: 0; min-height: 0; }
-.multifields .mf-card-fields > .mf-actions { display: none; }
-.multifields .mf-card-fields > .mf-items { padding: 0; }
-.multifields .mf-card-fields-column { margin: 0; min-height: 0; }
-.multifields .mf-card-fields-column > .mf-actions { display: none; }
-.multifields .mf-card-fields-column > .mf-items { padding: 0; align-content: flex-start; }
 /******************/
 
 .multifields .mf-row:hover > .mf-title { background-color: #2196f3 !important; border-color: #2196f3 !important; color: #fff !important; }

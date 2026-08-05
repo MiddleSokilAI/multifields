@@ -30,7 +30,8 @@
         'hidden' => true,
         'actions' => ['edit', 'del', 'move'],
         'value' => false,
-        'class' => 'col-4',
+        'class' => 'col-4 mf-layout-thumb',
+        'items.class' => 'd-block',
         'items' => [
             'thumb' => [
                 'type' => 'thumb',
@@ -38,46 +39,30 @@
                 'actions' => ['del', 'edit'],
                 'class' => 'col-2 float-left',
             ],
-            'fields' => [
-                'type' => 'row',
-                'actions' => false,
-                'value' => false,
-                'class' => 'col-10 float-left mf-card-fields',
-                'items' => [
-                    'main' => [
-                        'type' => 'row',
-                        'actions' => false,
-                        'value' => false,
-                        'class' => 'col-6 float-left mf-card-fields-column',
-                        'items' => [
-                            'image' => [
-                                'title' => __('global.image'),
-                                'type' => 'image',
-                                'thumb' => 'thumb',
-                                'placeholder' => '...',
-                                'class' => 'col-12',
-                            ],
-                            'link' => [
-                                'title' => __('global.link'),
-                                'type' => 'text',
-                                'placeholder' => '...',
-                                'class' => 'col-12',
-                            ],
-                        ],
-                    ],
-                    'alt' => [
-                        'title' => __('global.image_alt'),
-                        'type' => 'text',
-                        'placeholder' => '...',
-                        'class' => 'col-6',
-                    ],
-                    'title' => [
-                        'title' => __('multiFields::global.card_title'),
-                        'type' => 'text',
-                        'placeholder' => '...',
-                        'class' => 'col-12',
-                    ],
-                ],
+            'image' => [
+                'title' => __('multiFields::global.image'),
+                'type' => 'image',
+                'thumb' => 'thumb',
+                'placeholder' => '...',
+                'class' => 'col-5 float-left',
+            ],
+            'alt' => [
+                'title' => __('multiFields::global.image_alt'),
+                'type' => 'text',
+                'placeholder' => '...',
+                'class' => 'col-5 float-left',
+            ],
+            'link' => [
+                'title' => __('multiFields::global.link'),
+                'type' => 'text',
+                'placeholder' => '...',
+                'class' => 'col-10 float-left',
+            ],
+            'title' => [
+                'title' => __('multiFields::global.card_title'),
+                'type' => 'text',
+                'placeholder' => '...',
+                'class' => 'col-12',
             ],
         ],
     ],
