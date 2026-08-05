@@ -15,6 +15,8 @@ class MultifieldsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadTranslationsFrom(dirname(__DIR__) . '/lang', 'multiFields');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
                 dirname(__DIR__) . '/config/' => config_path('multifields', true),

@@ -132,7 +132,6 @@ class Elements
                 $this->params['lang.' . $k] = $v;
             }
         }
-
         return class_exists('DLTemplate') ? DLTemplate::getInstance(evolutionCMS())
             ->parseChunk('@CODE:' . $this->getTemplate(), $this->params, false, true) : evolutionCMS()->parseText($this->getTemplate(), $this->params);
     }

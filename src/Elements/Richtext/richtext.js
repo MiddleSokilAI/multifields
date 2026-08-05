@@ -8,19 +8,33 @@ Multifields.element('richtext', {
   },
 
   initEl: function(el, init) {
-    let theme = el.dataset['mfTheme'] ? el.dataset['mfTheme'] : '',
-        options = el.dataset['mfOptions'] ? JSON.parse(el.dataset['mfOptions']) : {};
+    if (el.closest('.mf-hidden')) {
+      return;
+    }
+    let options = el.dataset['mfOptions'] ? JSON.parse(el.dataset['mfOptions']) : {},
+        theme = el.dataset['mfTheme'] ? el.dataset['mfTheme'] : (options.theme ? options.theme : '');
     if (options.init || init) {
       let inputEl = el.querySelector('textarea');
       if (typeof tinymce !== 'undefined') {
-        let conf = theme !== undefined ? window['config_tinymce4_' + theme] : window[modxRTEbridge_tinymce4.default];
+        let conf = window['config_tinymce4_' + theme] ? window['config_tinymce4_' + theme] : window[modxRTEbridge_tinymce4.default];
+        if (options.theme && window['config_tinymce4_' + theme]) {
+          delete options.theme;
+        }
         conf = Object.assign({}, conf, options);
         conf.selector = '#' + inputEl.id;
+        [...el.querySelectorAll('.mce-tinymce')].map(function(div) {
+          div.parentElement.removeChild(div);
+        });
+        inputEl.style.display = 'block';
         tinymce.init(conf);
       } else if (typeof myCodeMirrors !== 'undefined') {
         if (myCodeMirrors['ta']) {
           options = Object.assign({}, myCodeMirrors['ta'].options, options);
         }
+        [...el.querySelectorAll('.CodeMirror')].map(function(div) {
+          div.parentElement.removeChild(div);
+        });
+        inputEl.style.display = 'block';
         myCodeMirrors[inputEl.id] = CodeMirror.fromTextArea(inputEl, options);
       }
     }
@@ -32,12 +46,12 @@ Multifields.element('richtext', {
     });
   },
 
-  actionDisplay: function() {
+  actionDisplay: function(el) {
     if (parent.modx) {
       Multifields.elements.richtext.popup = parent.modx.popup({
         iframe: 'iframe',
-        height: '85%',
-        width: '85%',
+        height: '90%',
+        width: '90%',
         draggable: 0,
         showclose: 0,
         overlay: 1,
@@ -46,7 +60,7 @@ Multifields.element('richtext', {
         delay: 0,
         hover: 0,
         hide: 0,
-        url: '?mf-action=&class=' + this.class + '&action=display',
+        url: '?mf-action&class=' + Multifields.elements.richtext.class + '&action=display&mf-options=' + btoa(el.parentElement.parentElement.getAttribute('data-mf-options')),
         onclose: function(e, el) {
           el.classList.remove('show');
           Multifields.elements.richtext.popup = null;
@@ -87,10 +101,11 @@ Multifields.element('richtext', {
   },
 
   build: function(el, item, i) {
-    let id = el.querySelector('textarea').id;
+    let id = el.querySelector('textarea').id, ed;
     if (typeof tinymce !== 'undefined') {
-      if (tinymce.editors[id]) {
-        item.value = tinymce.editors[id].getContent();
+      ed = tinymce.get(id);
+      if (ed) {
+        item.value = ed.getContent();
       }
     } else if (typeof myCodeMirrors !== 'undefined') {
       if (myCodeMirrors[id]) {
@@ -100,21 +115,28 @@ Multifields.element('richtext', {
     return item;
   },
 
-  destroy: function(el) {
+  destroy: function(el, save) {
+    if (typeof save === 'undefined') {
+      save = true;
+    }
     if (typeof tinymce !== 'undefined' && tinymce.editors[el.id]) {
-      el.value = tinymce.editors[el.id].getContent();
+      if (save) {
+        el.value = tinymce.editors[el.id].getContent();
+      }
       tinymce.editors[el.id].destroy();
     } else if (typeof myCodeMirrors !== 'undefined') {
       if (myCodeMirrors[el.id]) {
-        el.value = myCodeMirrors[el.id].getValue();
+        if (save) {
+          el.value = myCodeMirrors[el.id].getValue();
+        }
         myCodeMirrors[el.id].toTextArea();
       }
     }
   },
 
-  destroyEls: function(el) {
+  destroyEls: function(el, save) {
     [...el.querySelectorAll('.mf-richtext-inline')].map(function(el) {
-      Multifields.elements.richtext.destroy(el.querySelector('textarea'));
+      Multifields.elements.richtext.destroy(el.querySelector('textarea'), save);
     });
   }
 });
