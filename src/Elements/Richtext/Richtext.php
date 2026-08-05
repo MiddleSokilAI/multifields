@@ -1,6 +1,4 @@
-<?php
-
-namespace Multifields\Elements\Richtext;
+<?php namespace Multifields\Elements\Richtext;
 
 class Richtext extends \Multifields\Base\Elements
 {

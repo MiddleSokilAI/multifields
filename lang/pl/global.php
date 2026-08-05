@@ -3,6 +3,8 @@
 return [
     'slider_block' => 'Blok slidera',
     'slider_position' => 'Slider z karty „Galeria” będzie wyświetlany w tym miejscu.',
+    'hero_slider_block' => 'Slider główny',
+    'hero_slider_position' => 'Główny slider z karty „Galeria” będzie wyświetlany w tym miejscu.',
     'cards_block' => 'Blok kart',
     'section_title' => 'Tytuł sekcji',
     'cards_list' => 'Lista kart',

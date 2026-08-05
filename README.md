@@ -12,13 +12,46 @@ multiFields — кастомний тип TV для Evolution CMS. Він доз
 не створює відсутній конфіг автоматично.
 
 Щоб опублікувати приклади конфігурацій пакета в
-`core/custom/config/multifields/`, виконай:
+`core/custom/config/multifields/` і Blade-шаблони в `views/multifields/`,
+виконай:
 
 ```bash
 php artisan vendor:publish --tag=multiFields
 ```
 
-Без `--force` команда не перезаписує файли, які вже існують у `core/custom`.
+Без `--force` команда не перезаписує файли, які вже існують у `core/custom`
+або `views/multifields`.
+
+### Frontend-шаблони
+
+У контролері нормалізуй TV за його ім'ям:
+
+```php
+use Multifields\Facades\multiFields;
+
+$this->data['constructor'] = multiFields::normalize('constructor');
+```
+
+У Blade-шаблоні кожен нормалізований блок автоматично підключає view з таким
+самим іменем:
+
+```blade
+@foreach($constructor ?? [] as $item)
+    @includeIf('multifields.' . $item['name'], ['items' => $item['items']])
+@endforeach
+```
+
+Наприклад, блок із ключем `cards` використовує
+`views/multifields/cards.blade.php`, а `hero_slider_sgallery` —
+`views/multifields/hero_slider_sgallery.blade.php`. Відсутній view пропускається.
+`hero_slider_sgallery` потребує встановленого та налаштованого `sGallery`.
+Після публікації файли в `views/multifields/` належать проєкту й можуть
+змінюватися без редагування пакета.
+
+### Зберігання даних
+
+multiFields завжди зберігає значення у TV бази даних. Пакет не створює
+legacy-плагін у Manager і не записує JSON-файли в `core/custom`.
 
 Для кожного TV директорії перевіряються в такому порядку:
 
@@ -78,15 +111,46 @@ value is rendered on the front end.
 Create a PHP configuration file which returns the TV configuration array. The
 package never creates a missing configuration file automatically.
 
-To publish the package configuration examples to
-`core/custom/config/multifields/`, run:
+To publish package configuration examples to
+`core/custom/config/multifields/` and Blade views to `views/multifields/`, run:
 
 ```bash
 php artisan vendor:publish --tag=multiFields
 ```
 
 Without `--force`, the command does not overwrite files that already exist in
-`core/custom`.
+`core/custom` or `views/multifields`.
+
+### Frontend views
+
+In a controller, normalize a TV by its name:
+
+```php
+use Multifields\Facades\multiFields;
+
+$this->data['constructor'] = multiFields::normalize('constructor');
+```
+
+In a Blade template, each normalized block automatically includes a view with
+the matching name:
+
+```blade
+@foreach($constructor ?? [] as $item)
+    @includeIf('multifields.' . $item['name'], ['items' => $item['items']])
+@endforeach
+```
+
+For example, the `cards` block uses `views/multifields/cards.blade.php`, while
+`hero_slider_sgallery` uses `views/multifields/hero_slider_sgallery.blade.php`.
+A missing view is skipped. `hero_slider_sgallery` requires an installed and
+configured `sGallery`.
+After publishing, files in `views/multifields/` belong to the project and may
+be changed without editing the package.
+
+### Data storage
+
+multiFields always stores values in the database TV value. The package does not
+register a legacy Manager plugin or write JSON files to `core/custom`.
 
 For each requested TV, directories are checked in this order:
 

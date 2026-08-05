@@ -226,6 +226,20 @@ class Elements
                     $v = array_merge($find, $v);
                 }
 
+                if (isset($find['title'], $v['items']['title'])) {
+                    $titleValue = $v['items']['title'];
+                    if (is_array($titleValue)) {
+                        $titleValue = $titleValue['value'] ?? '';
+                    }
+
+                    $v['title'] = $find['title'];
+                    $v['display.title'] = $v['title'];
+
+                    if (is_scalar($titleValue) && trim((string)$titleValue) !== '') {
+                        $v['display.title'] .= ' (' . (string)$titleValue . ')';
+                    }
+                }
+
                 if (!isset($find['items'])) {
                     $find['items'] = [];
                 }
@@ -502,6 +516,11 @@ class Elements
 
     protected function setAttr()
     {
+        $displayTitle = $this->params['display.title'] ?? $this->params['title'];
+        if ($displayTitle !== '') {
+            $this->params['attr'] .= ' mf-title="' . htmlspecialchars(strip_tags((string)$displayTitle), ENT_QUOTES, 'UTF-8') . '"';
+        }
+
         foreach ($this->params as $k => $param) {
             if (strpos($k, 'mf.') !== false) {
                 $this->params['attr'] .= str_replace('mf.', ' data-mf-', strtolower(preg_replace('/([a-z])([A-Z])/', '$1-$2', $k))) . '="' . $param . '"';

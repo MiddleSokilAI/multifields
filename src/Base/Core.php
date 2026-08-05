@@ -21,16 +21,9 @@ class Core
 
     private function __construct($params = [])
     {
-        $pluginParams = [];
-        if (!empty(evolutionCMS()->pluginCache['multifieldsProps'])) {
-            $pluginParams = json_decode(evolutionCMS()->pluginCache['multifieldsProps'], true);
-        }
-
         $this->setParams(array_merge([
             'basePath' => str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . '/',
-            'dataPath' => MODX_BASE_PATH . 'core/custom/config/multifields/data/',
-            'storage' => empty($pluginParams['multifields_storage']) ? 'files' : $pluginParams['multifields_storage'],
-            'debug' => empty($pluginParams['multifields_debug']) ? false : ($pluginParams['multifields_debug'] == 'no' ? false : true),
+            'debug' => false,
         ], $params));
 
         if (!is_dir($this->getCacheFolder())) {
@@ -297,8 +290,6 @@ class Core
                 $out = 'Not found config file for TV id=' . $this->getParams('tv')['id'];
             }
         } else {
-            $start = microtime(true);
-
             $values = '';
 
             if (!empty($this->getData())) {
@@ -310,16 +301,12 @@ class Core
             $out = $elements->renderFormElement([
                 'type' => 'multifields',
                 'name' => 'multifields',
-                'form.id' => $this->getParams('storage') == 'files' ? 'tv-mf-data[' . $this->getParams('id') . '__' . $this->getParams('tv')['id'] . ']' : 'tv' . $this->getParams('tv')['id'],
+                'form.id' => 'tv' . $this->getParams('tv')['id'],
                 'tv.id' => $this->getParams('tv')['id'],
                 'tv.name' => $this->getParams('tv')['name'],
                 'items' => $elements->renderData($this->getData()),
                 'values' => $values
             ]);
-
-            if ($this->getParams('debug')) {
-                echo microtime(true) - $start . ' s.';
-            }
 
             if (!empty($ResourceManagerLoaded)) {
                 $ResourceManagerLoaded = $tmp_ResourceManagerLoaded;
@@ -327,47 +314,6 @@ class Core
         }
 
         return $out;
-    }
-
-    /**
-     * Persist file-backed TV data in the project custom configuration directory.
-     *
-     * @return void
-     */
-    public function saveData()
-    {
-        if (isset($_POST['tv-mf-data']) && $this->getParams('storage') == 'files') {
-            $dataPath = $this->getParams('dataPath');
-            if (!is_dir($dataPath)) {
-                mkdir($dataPath, 0755, true);
-            }
-
-            foreach ($_POST['tv-mf-data'] as $k => $data) {
-                list($id, $tvId) = explode('__', $k);
-                $this->setParams([
-                    'id' => $id,
-                    'tv' => [
-                        'id' => $tvId
-                    ]
-                ]);
-                $data = evolutionCMS()->removeSanitizeSeed($data);
-                $file = $dataPath . $id . '__' . $tvId . '.json';
-                if ($data == '') {
-                    if (is_file($file)) {
-                        unlink($file);
-                    }
-                } else {
-                    file_put_contents($file, $data);
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    public function deleteData()
-    {
     }
 
     /**
@@ -503,51 +449,10 @@ class Core
     public function getData()
     {
         if (empty($this->data)) {
-            switch ($this->getParams('storage')) {
-                case 'files':
-                    $this->data = $this->fileData();
-                    break;
-
-                default:
-                    $this->data = !empty($this->getParams('tv')['value']) ? json_decode($this->getParams('tv')['value'], true) : $this->getConfig('items');
-                    break;
-            }
+            $this->data = !empty($this->getParams('tv')['value']) ? json_decode($this->getParams('tv')['value'], true) : $this->getConfig('items');
         }
 
         return $this->data;
     }
 
-    /**
-     * Load file-backed TV data from the project custom configuration directory.
-     *
-     * @param int $doc_id Resource identifier.
-     * @param int|string|null $tv_id Template variable identifier.
-     * @return array
-     */
-    private function fileData($doc_id = 0, $tv_id = null)
-    {
-        $this->data = [];
-
-        $dataPath = $this->getParams('dataPath');
-        if (!is_dir($dataPath)) {
-            mkdir($dataPath, 0755, true);
-        }
-
-        if (empty($doc_id) && !empty($this->getParams('id'))) {
-            $doc_id = $this->getParams('id');
-        }
-
-        if (empty($tv_id) && isset($this->getParams('tv')['id'])) {
-            $tv_id = $this->getParams('tv')['id'];
-        }
-
-        $file = $dataPath . $doc_id . '__' . $tv_id . '.json';
-
-        if (file_exists($file)) {
-            $this->data = file_get_contents($file);
-            $this->data = json_decode($this->data, true);
-        }
-
-        return $this->data;
-    }
 }

@@ -1,6 +1,4 @@
-<?php
-
-namespace Multifields\Elements\Date;
+<?php namespace Multifields\Elements\Date;
 
 class Date extends \Multifields\Base\Elements
 {
