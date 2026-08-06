@@ -1,6 +1,5 @@
 <?php
 
-use Event;
 use Multifields\Base\Core;
 
 Event::listen('evolution.OnManagerMainFrameHeaderHTMLBlock', function () {

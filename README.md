@@ -12,7 +12,7 @@ multiFields — кастомний тип TV для Evolution CMS. Він доз
 не створює відсутній конфіг автоматично.
 
 Щоб опублікувати приклади конфігурацій пакета в
-`core/custom/config/multifields/` і Blade-шаблони в `views/multifields/`,
+`core/custom/multifields/` і Blade-шаблони в `views/multifields/`,
 виконай:
 
 ```bash
@@ -55,7 +55,7 @@ legacy-плагін у Manager і не записує JSON-файли в `core/c
 
 Для кожного TV директорії перевіряються в такому порядку:
 
-1. `core/custom/config/multifields/` — специфічні для сайту перевизначення
+1. `core/custom/multifields/` — специфічні для сайту перевизначення
 2. `assets/plugins/multifields/config/` — застаріла конфігурація сайту
 3. `core/vendor/evolution-cms-extras/multifields/config/` — значення пакета за замовчуванням
 
@@ -85,7 +85,7 @@ return [
 ];
 ```
 
-Збережи його як `core/custom/config/multifields/homepage_blocks.php`. Пакет
+Збережи його як `core/custom/multifields/homepage_blocks.php`. Пакет
 також містить legacy-приклад:
 `assets/plugins/multifields/config/example.slider.php`.
 
@@ -112,7 +112,7 @@ Create a PHP configuration file which returns the TV configuration array. The
 package never creates a missing configuration file automatically.
 
 To publish package configuration examples to
-`core/custom/config/multifields/` and Blade views to `views/multifields/`, run:
+`core/custom/multifields/` and Blade views to `views/multifields/`, run:
 
 ```bash
 php artisan vendor:publish --tag=multiFields
@@ -154,7 +154,7 @@ register a legacy Manager plugin or write JSON files to `core/custom`.
 
 For each requested TV, directories are checked in this order:
 
-1. `core/custom/config/multifields/` — site-specific overrides
+1. `core/custom/multifields/` — site-specific overrides
 2. `assets/plugins/multifields/config/` — legacy site configuration
 3. `core/vendor/evolution-cms-extras/multifields/config/` — package defaults
 
@@ -185,7 +185,7 @@ return [
 ];
 ```
 
-Save it as `core/custom/config/multifields/homepage_blocks.php`. The package
+Save it as `core/custom/multifields/homepage_blocks.php`. The package
 also ships a legacy example at
 `assets/plugins/multifields/config/example.slider.php`.
 

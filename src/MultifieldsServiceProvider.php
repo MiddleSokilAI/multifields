@@ -21,7 +21,7 @@ class MultifieldsServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                dirname(__DIR__) . '/config/' => config_path('multifields', true),
+                dirname(__DIR__) . '/config/' => MODX_BASE_PATH . 'core/custom/multifields',
                 dirname(__DIR__) . '/views/' => public_path('views/multifields'),
             ], 'multiFields');
         }

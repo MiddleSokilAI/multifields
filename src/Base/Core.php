@@ -367,7 +367,7 @@ class Core
             $configNames = array_filter(array_unique($configNames), 'strlen');
 
             $configDirectories = [
-                MODX_BASE_PATH . 'core/custom/config/multifields/',
+                MODX_BASE_PATH . 'core/custom/multifields/',
                 MODX_BASE_PATH . 'assets/plugins/multifields/config/',
                 MODX_BASE_PATH . 'core/vendor/evolution-cms-extras/multifields/config/',
             ];
