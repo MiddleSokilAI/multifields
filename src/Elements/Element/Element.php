@@ -1,6 +1,4 @@
-<?php
-
-namespace Multifields\Elements\Element;
+<?php namespace Multifields\Elements\Element;
 
 class Element extends \Multifields\Base\Elements
 {

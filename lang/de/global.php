@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'slider_block' => 'Slider-Block',
+    'slider_position' => 'Der Slider aus dem Tab „Galerie“ wird an dieser Position angezeigt.',
+    'hero_slider_block' => 'Hero-Slider',
+    'hero_slider_position' => 'Der Hero-Slider aus dem Tab „Galerie“ wird an dieser Position angezeigt.',
+    'last_sarticles_block' => 'Neueste Einträge aus dem Publikationen-Modul',
+    'last_sarticles_count' => 'Anzahl der neuesten Einträge',
+    'last_sarticles_link_text' => 'Linktext',
+    'last_sarticles_more' => 'Mehr Einträge',
+    'cards_block' => 'Kartenblock',
+    'logos_block' => 'Logoliste',
+    'logos_list' => 'Logoliste',
+    'section_title' => 'Abschnittstitel',
+    'heading_tag' => 'Überschriften-Tag',
+    'cards_list' => 'Kartenliste',
+    'image' => 'Bild',
+    'richtext_block' => 'Texteditor',
+    'faq_block' => 'Fragen und Antworten',
+    'faq_list' => 'Liste der Fragen und Antworten',
+    'question' => 'Frage',
+    'answer' => 'Antwort',
+    'image_alt' => 'Bild-ALT',
+    'link' => 'Link',
+    'card_title' => 'Kartentitel',
+];

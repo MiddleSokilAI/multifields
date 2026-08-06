@@ -1,7 +1,6 @@
 <?php namespace Multifields;
 
 use EvolutionCMS\ServiceProvider;
-use Event;
 
 class MultifieldsServiceProvider extends ServiceProvider
 {
@@ -15,23 +14,26 @@ class MultifieldsServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->loadTranslationsFrom(dirname(__DIR__) . '/lang', 'multiFields');
+
+        $this->app->singleton('multiFields', fn () => new multiFields());
+        class_alias(Facades\multiFields::class, 'multiFields');
+
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                dirname(__DIR__) . '/config/' => config_path('multifields', true),
+                dirname(__DIR__) . '/config/' => MODX_BASE_PATH . 'core/custom/multifields',
+                dirname(__DIR__) . '/views/' => public_path('views/multifields'),
             ], 'multiFields');
         }
     }
+
     /**
-     * Register the service provider.
+     * Register the package virtual plugins.
      *
      * @return void
      */
     public function register()
     {
-
-        $this->loadPluginsFrom(
-            dirname(__DIR__) . '/plugins/'
-        );
-
+        $this->loadPluginsFrom(dirname(__DIR__) . '/plugins/');
     }
 }

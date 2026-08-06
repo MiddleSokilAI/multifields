@@ -1,6 +1,4 @@
-<?php
-
-namespace Multifields\Elements\Text;
+<?php namespace Multifields\Elements\Text;
 
 class Text extends \Multifields\Base\Elements
 {

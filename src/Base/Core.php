@@ -21,15 +21,9 @@ class Core
 
     private function __construct($params = [])
     {
-        $pluginParams = [];
-        if (!empty(evolutionCMS()->pluginCache['multifieldsProps'])) {
-            $pluginParams = json_decode(evolutionCMS()->pluginCache['multifieldsProps'], true);
-        }
-
         $this->setParams(array_merge([
             'basePath' => str_replace(DIRECTORY_SEPARATOR, '/', dirname(__DIR__)) . '/',
-            'storage' => empty($pluginParams['multifields_storage']) ? 'files' : $pluginParams['multifields_storage'],
-            'debug' => empty($pluginParams['multifields_debug']) ? false : ($pluginParams['multifields_debug'] == 'no' ? false : true),
+            'debug' => false,
         ], $params));
 
         if (!is_dir($this->getCacheFolder())) {
@@ -296,8 +290,6 @@ class Core
                 $out = 'Not found config file for TV id=' . $this->getParams('tv')['id'];
             }
         } else {
-            $start = microtime(true);
-
             $values = '';
 
             if (!empty($this->getData())) {
@@ -309,16 +301,12 @@ class Core
             $out = $elements->renderFormElement([
                 'type' => 'multifields',
                 'name' => 'multifields',
-                'form.id' => $this->getParams('storage') == 'files' ? 'tv-mf-data[' . $this->getParams('id') . '__' . $this->getParams('tv')['id'] . ']' : 'tv' . $this->getParams('tv')['id'],
+                'form.id' => 'tv' . $this->getParams('tv')['id'],
                 'tv.id' => $this->getParams('tv')['id'],
                 'tv.name' => $this->getParams('tv')['name'],
                 'items' => $elements->renderData($this->getData()),
                 'values' => $values
             ]);
-
-            if ($this->getParams('debug')) {
-                echo microtime(true) - $start . ' s.';
-            }
 
             if (!empty($ResourceManagerLoaded)) {
                 $ResourceManagerLoaded = $tmp_ResourceManagerLoaded;
@@ -326,40 +314,6 @@ class Core
         }
 
         return $out;
-    }
-
-    /**
-     *
-     */
-    public function saveData()
-    {
-        if (isset($_POST['tv-mf-data']) && $this->getParams('storage') == 'files') {
-            foreach ($_POST['tv-mf-data'] as $k => $data) {
-                list($id, $tvId) = explode('__', $k);
-                $this->setParams([
-                    'id' => $id,
-                    'tv' => [
-                        'id' => $tvId
-                    ]
-                ]);
-                $data = evolutionCMS()->removeSanitizeSeed($data);
-                $file = $this->getParams('basePath') . 'data/' . $id . '__' . $tvId . '.json';
-                if ($data == '') {
-                    if (is_file($file)) {
-                        unlink($file);
-                    }
-                } else {
-                    file_put_contents($file, $data);
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     */
-    public function deleteData()
-    {
     }
 
     /**
@@ -413,7 +367,7 @@ class Core
             $configNames = array_filter(array_unique($configNames), 'strlen');
 
             $configDirectories = [
-                MODX_BASE_PATH . 'core/custom/config/multifields/',
+                MODX_BASE_PATH . 'core/custom/multifields/',
                 MODX_BASE_PATH . 'assets/plugins/multifields/config/',
                 MODX_BASE_PATH . 'core/vendor/evolution-cms-extras/multifields/config/',
             ];
@@ -495,48 +449,10 @@ class Core
     public function getData()
     {
         if (empty($this->data)) {
-            switch ($this->getParams('storage')) {
-                case 'files':
-                    $this->data = $this->fileData();
-                    break;
-
-                default:
-                    $this->data = !empty($this->getParams('tv')['value']) ? json_decode($this->getParams('tv')['value'], true) : $this->getConfig('items');
-                    break;
-            }
+            $this->data = !empty($this->getParams('tv')['value']) ? json_decode($this->getParams('tv')['value'], true) : $this->getConfig('items');
         }
 
         return $this->data;
     }
 
-    /**
-     * @param int $doc_id
-     * @param null $tv_id
-     * @return array
-     */
-    private function fileData($doc_id = 0, $tv_id = null)
-    {
-        $this->data = [];
-
-        if (!is_dir($this->getParams('basePath') . 'data')) {
-            mkdir($this->getParams('basePath') . 'data', 0755);
-        }
-
-        if (empty($doc_id) && !empty($this->getParams('id'))) {
-            $doc_id = $this->getParams('id');
-        }
-
-        if (empty($tv_id) && isset($this->getParams('tv')['id'])) {
-            $tv_id = $this->getParams('tv')['id'];
-        }
-
-        $file = $this->getParams('basePath') . 'data/' . $doc_id . '__' . $tv_id . '.json';
-
-        if (file_exists($file)) {
-            $this->data = file_get_contents($file);
-            $this->data = json_decode($this->data, true);
-        }
-
-        return $this->data;
-    }
 }

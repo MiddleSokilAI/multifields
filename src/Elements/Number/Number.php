@@ -1,6 +1,4 @@
-<?php
-
-namespace Multifields\Elements\Number;
+<?php namespace Multifields\Elements\Number;
 
 class Number extends \Multifields\Base\Elements
 {

@@ -1,6 +1,4 @@
-<?php
-
-namespace Multifields\Elements\Row;
+<?php namespace Multifields\Elements\Row;
 
 /**
  * Renders a manager row and exposes the actions available for that row.
