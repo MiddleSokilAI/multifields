@@ -15,6 +15,7 @@ return [
     'section_title' => 'Section title',
     'cards_list' => 'Cards list',
     'image' => 'Image',
+    'richtext_block' => 'Text editor',
     'image_alt' => 'Image ALT',
     'link' => 'Link',
     'card_title' => 'Card title',

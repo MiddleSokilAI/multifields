@@ -15,6 +15,7 @@ return [
     'section_title' => 'Abschnittstitel',
     'cards_list' => 'Kartenliste',
     'image' => 'Bild',
+    'richtext_block' => 'Texteditor',
     'image_alt' => 'Bild-ALT',
     'link' => 'Link',
     'card_title' => 'Kartentitel',

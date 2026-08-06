@@ -15,6 +15,7 @@ return [
     'section_title' => 'Tytuł sekcji',
     'cards_list' => 'Lista kart',
     'image' => 'Obraz',
+    'richtext_block' => 'Edytor tekstu',
     'image_alt' => 'Tekst alternatywny obrazu',
     'link' => 'Link',
     'card_title' => 'Tytuł karty',

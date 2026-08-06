@@ -15,6 +15,7 @@ return [
     'section_title' => 'Заголовок секції',
     'cards_list' => 'Список карток',
     'image' => 'Зображення',
+    'richtext_block' => 'Текстовий редактор',
     'image_alt' => 'ALT зображення',
     'link' => 'Посилання',
     'card_title' => 'Заголовок картки',
