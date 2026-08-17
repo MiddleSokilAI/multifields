@@ -8,5 +8,5 @@ if (!defined('MODX_BASE_PATH')) {
     die('HACK???');
 }
 
-echo MultiFields\Base\Core::getInstance()
-    ->render($content['id'], $row);
+echo Multifields\Base\Core::getInstance()
+    ->render($content['id'] ?? 0, $row);
